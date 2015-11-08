@@ -1,0 +1,147 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/activity_background_color"
+    android:orientation="vertical">
+
+    <include layout="@layout/error_layout" android:id="@+id/error_layout"
+        android:visibility="gone"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/no_padding"
+        tools:context="es.josepul.popmovies.MovieDetailActivityFragment"
+        android:orientation="vertical"
+        android:id="@+id/movie_detail_scrollview"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/no_width_no_height"
+            tools:context="es.josepul.popmovies.MovieDetailActivityFragment"
+            android:orientation="vertical">
+
+            <TextView android:layout_width="match_parent"
+                android:layout_height="@dimen/movie_title_height"
+                android:id="@+id/movie_detail_name"
+                android:gravity="center"
+                android:background="@color/movie_title_detail"
+                android:textSize="@dimen/movie_title_textsize"
+                android:textStyle="bold"
+                android:elegantTextHeight="true"
+                android:textColor="@color/movie_title_color"
+                android:visibility="invisible"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:padding="@dimen/normal_padding">
+
+                <ImageView
+                    android:layout_width="@dimen/no_width_no_height"
+                    android:layout_height="match_parent"
+                    android:id="@+id/movie_detail_poster"
+                    android:layout_alignParentLeft="true"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/cover_min_height"
+                    />
+
+                <LinearLayout
+                    android:layout_width="@dimen/no_width_no_height"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/no_width_no_height"
+                        android:id="@+id/movie_detail_release_date"
+                        android:gravity="center"
+                        android:textSize="@dimen/normal_textsize"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/no_width_no_height"
+                        android:id="@+id/movie_detail_runtime"
+                        android:gravity="center"
+                        android:textSize="@dimen/normal_textsize"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/no_width_no_height"
+                        android:id="@+id/movie_detail_rating"
+                        android:gravity="center"
+                        android:textSize="@dimen/normal_textsize"
+                        android:layout_weight="1"/>
+
+                    <RatingBar
+                        android:id="@+id/movie_detail_rating_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:numStars="5"
+                        android:stepSize=".1"
+                        android:isIndicator="true"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:visibility="invisible"/>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/movie_detail_mark_favourite"
+                        android:text="Mark as Favourite"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/movie_detail_overview"
+                android:padding="@dimen/normal_padding"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reviews: "
+                android:padding="@dimen/normal_padding"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/movie_detail_reviews"
+                android:padding="@dimen/normal_padding">
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trailers: "
+                android:padding="@dimen/normal_padding"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/movie_detail_trailers"
+                android:padding="@dimen/normal_padding">
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>

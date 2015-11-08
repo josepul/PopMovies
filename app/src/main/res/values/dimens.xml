@@ -1,0 +1,32 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- Dimen for 0dp padding -->
+    <dimen name="no_padding">0dp</dimen>
+
+    <!-- Dimen for 0dp spacing -->
+    <dimen name="no_spacing">0dp</dimen>
+
+    <!-- Dimen for no internet connection fragment -->
+    <dimen name="padding_fragment_no_internet_connection">20dp</dimen>
+
+    <!-- Dimen for 0 width/height - Layouts with layout_weigth -->
+    <dimen name="no_width_no_height">0dp</dimen>
+
+    <!-- Dimen for movie title height-->
+    <dimen name="movie_title_height">100dp</dimen>
+
+    <!-- Dimen for movie title text size-->
+    <dimen name="movie_title_textsize">30dp</dimen>
+
+    <!-- Dimen for cover min height-->
+    <dimen name="cover_min_height">200dp</dimen>
+
+    <!-- Dimen for normal padding (release, rating, overview.. -->
+    <dimen name="normal_padding">16dp</dimen>
+
+    <!-- Dimen for normal text size (release, rating)-->
+    <dimen name="normal_textsize">20dp</dimen>
+</resources>

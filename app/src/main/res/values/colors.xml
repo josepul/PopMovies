@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <!-- Background color for activities -->
+    <color name="activity_background_color">#D3D3D3</color>
+
+    <!-- Background color for movie title textview -->
+    <color name="movie_title_detail">#AAAAAA</color>
+
+    <!-- Text color for movie title textview -->
+    <color name="movie_title_color">#FFFFFF</color>
+
+    <!-- Primary color for theme -->
+    <color name="primaryColor">#F00</color>
+
+    <!-- Control color for theme -->
+    <color name="colorControlNormal">#000</color>
+</resources>
