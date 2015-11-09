@@ -1,6 +1,5 @@
 package es.josepul.popmovies;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -89,11 +88,10 @@ public class MoviePostersFragment extends Fragment implements LoaderManager.Load
                 // if it cannot seek to that position.
                 Cursor cursor = (Cursor) mMoviesAdapter.getItem(position);
                 if (cursor != null) {
-                    Intent intent = new Intent(getActivity(), MovieDetailActivity.class)
-                            .setData(
-                                    MoviesContract.MovieEntry.buildMovieUri(cursor.getInt(COL_MOVIE_ID)
-                                    ));
-                    startActivity(intent);
+                    ((Callback) getActivity())
+                            .onItemSelected(MoviesContract.MovieEntry.buildMovieUri(
+                                    cursor.getLong(COL_MOVIE_ID)
+                            ));
                 }
             }
         });
@@ -184,5 +182,17 @@ public class MoviePostersFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mMoviesAdapter.swapCursor(null);
+    }
+
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Uri dateUri);
     }
 }

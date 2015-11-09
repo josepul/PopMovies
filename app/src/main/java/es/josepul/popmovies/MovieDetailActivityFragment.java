@@ -43,6 +43,10 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
 
     private static final String LOG_TAG = MovieDetailActivityFragment.class.getSimpleName();
 
+    static final String DETAIL_URI = "MOVIE_URI";
+
+    private Uri mUri;
+
     private static final int DETAIL_LOADER = 0;
     private static final int REVIEWS_LOADER = 1;
     private static final int TRAILERS_LOADER = 2;
@@ -106,8 +110,16 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Bundle arguments = getArguments();
+        if(arguments != null){
+            mUri = arguments.getParcelable(DETAIL_URI);
+        }
+
         View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
         ButterKnife.bind(this, rootView);
+
+
 
         //mReviewsAdapter = new ReviewsAdapter(getActivity(), null, 0);
         //mReviews.setAdapter(mReviewsAdapter);
@@ -132,42 +144,40 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
         Log.v(LOG_TAG, "In onCreateLoader");
         Intent intent = getActivity().getIntent();
         CursorLoader cursorLoader = null;
-        if (intent == null) {
-            return null;
-        }
+        if (mUri != null ) {
 
-
-        if (id == DETAIL_LOADER) {
-            // Now create and return a CursorLoader that will take care of
-            // creating a Cursor for the data being displayed.
-            cursorLoader = new CursorLoader(
-                    getActivity(),
-                    intent.getData(),
-                    DETAIL_COLUMNS,
-                    null,
-                    null,
-                    null
-            );
-        }else if(id == REVIEWS_LOADER){
-            long idMovie = Long.parseLong(MoviesContract.ReviewEntry.getMovieIdFromUri(intent.getData()));
-            cursorLoader = new CursorLoader(
-                    getActivity(),
-                    MoviesContract.ReviewEntry.buildReviewUri(idMovie),
-                    REVIEW_COLUMNS,
-                    null,
-                    null,
-                    null
-            );
-        }else if(id == TRAILERS_LOADER){
-            long idMovie = Long.parseLong(MoviesContract.TrailerEntry.getMovieIdFromUri(intent.getData()));
-            cursorLoader = new CursorLoader(
-                    getActivity(),
-                    MoviesContract.TrailerEntry.buildTrailerUri(idMovie),
-                    TRAILER_COLUMNS,
-                    null,
-                    null,
-                    null
-            );
+            if (id == DETAIL_LOADER) {
+                // Now create and return a CursorLoader that will take care of
+                // creating a Cursor for the data being displayed.
+                cursorLoader = new CursorLoader(
+                        getActivity(),
+                        mUri,
+                        DETAIL_COLUMNS,
+                        null,
+                        null,
+                        null
+                );
+            } else if (id == REVIEWS_LOADER) {
+                long idMovie = Long.parseLong(MoviesContract.ReviewEntry.getMovieIdFromUri(mUri));
+                cursorLoader = new CursorLoader(
+                        getActivity(),
+                        MoviesContract.ReviewEntry.buildReviewUri(idMovie),
+                        REVIEW_COLUMNS,
+                        null,
+                        null,
+                        null
+                );
+            } else if (id == TRAILERS_LOADER) {
+                long idMovie = Long.parseLong(MoviesContract.TrailerEntry.getMovieIdFromUri(mUri));
+                cursorLoader = new CursorLoader(
+                        getActivity(),
+                        MoviesContract.TrailerEntry.buildTrailerUri(idMovie),
+                        TRAILER_COLUMNS,
+                        null,
+                        null,
+                        null
+                );
+            }
         }
 
         return cursorLoader;

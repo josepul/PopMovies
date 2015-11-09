@@ -1,6 +1,10 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_movies"
     android:name="es.josepul.popmovies.MoviePostersFragment"
-    tools:layout="@layout/fragment_main" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/normal_padding"
+    android:layout_marginRight="@dimen/normal_padding"
+    tools:layout="@layout/fragment_main"
     />
