@@ -26,6 +26,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@android:color/white"
         android:textSize="13dp"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        android:ellipsize="end"/>
 
 </FrameLayout>

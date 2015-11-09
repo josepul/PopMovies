@@ -29,4 +29,10 @@
 
     <!-- Dimen for normal text size (release, rating)-->
     <dimen name="normal_textsize">20dp</dimen>
+
+    <!-- Dimen for normal text size (release, rating)-->
+    <dimen name="trailers_reviews_bottom_padding">10dp</dimen>
+
+    <!-- Dimen for normal text size (release, rating)-->
+    <dimen name="trailers_title_left_padding">10dp</dimen>
 </resources>

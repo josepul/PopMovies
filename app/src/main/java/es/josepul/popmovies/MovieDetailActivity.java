@@ -13,7 +13,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
-        if (savedInstanceState == null){
+        if (savedInstanceState == null) {
 
             Bundle arguments = new Bundle();
             arguments.putParcelable(MovieDetailActivityFragment.DETAIL_URI, getIntent().getData());
@@ -26,7 +26,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                     .commit();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="movie_video_type">Trailer</string>
+    <string name="movie_video_site">YouTube</string>
+    <string name="youtube_url">http://m.youtube.com/watch?v=</string>
+    <string name="youtube_intent_uri">vnd.youtube:</string>
+</resources>

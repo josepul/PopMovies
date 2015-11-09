@@ -13,12 +13,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/review_item_content"/>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:background="#000"
-        android:id="@+id/review_item_horizontal_line"/>
+        android:id="@+id/review_item_content"
+        android:paddingBottom="@dimen/normal_padding"/>
 
 </LinearLayout>

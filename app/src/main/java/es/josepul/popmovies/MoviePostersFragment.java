@@ -96,7 +96,6 @@ public class MoviePostersFragment extends Fragment implements LoaderManager.Load
             }
         });
 
-
         return mRootView;
     }
 

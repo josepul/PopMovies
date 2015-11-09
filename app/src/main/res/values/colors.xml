@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <!-- Background color for activities -->
-    <color name="activity_background_color">#D3D3D3</color>
+    <color name="activity_background_color">#FFFFFF</color>
 
     <!-- Background color for movie title textview -->
     <color name="movie_title_detail">#AAAAAA</color>

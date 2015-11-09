@@ -12,8 +12,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -26,8 +31,6 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import es.josepul.popmovies.adapters.ReviewsAdapter;
-import es.josepul.popmovies.adapters.TrailersAdapter;
 import es.josepul.popmovies.data.MoviesContract;
 import es.josepul.popmovies.util.DateUtils;
 import es.josepul.popmovies.util.MovieDBConstants;
@@ -38,14 +41,15 @@ import es.josepul.popmovies.util.MovieDBConstants;
  */
 public class MovieDetailActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    public MovieDetailActivityFragment() {
-    }
-
     private static final String LOG_TAG = MovieDetailActivityFragment.class.getSimpleName();
 
     static final String DETAIL_URI = "MOVIE_URI";
 
+    static final String SHARE_TAG = "#PopularMovies - ";
+
     private Uri mUri;
+
+    private ShareActionProvider mShareActionProvider;
 
     private static final int DETAIL_LOADER = 0;
     private static final int REVIEWS_LOADER = 1;
@@ -104,8 +108,11 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
     @Bind(R.id.movie_detail_reviews) LinearLayout mReviews;
     @Bind(R.id.movie_detail_trailers) LinearLayout mTrailers;
     @Bind(R.id.movie_detail_mark_favourite) Button mFavourite;
-    ReviewsAdapter mReviewsAdapter;
-    TrailersAdapter mTrailersAdapter;
+
+
+    public MovieDetailActivityFragment(){
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -119,14 +126,6 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
         View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
         ButterKnife.bind(this, rootView);
 
-
-
-        //mReviewsAdapter = new ReviewsAdapter(getActivity(), null, 0);
-        //mReviews.setAdapter(mReviewsAdapter);
-
-        //mTrailersAdapter = new TrailersAdapter(getActivity(), null, 0);
-        //mTrailers.setAdapter(mTrailersAdapter);
-
         return rootView;
 
     }
@@ -137,6 +136,39 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
         getLoaderManager().initLoader(REVIEWS_LOADER, null, this);
         getLoaderManager().initLoader(TRAILERS_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.detailfragment, menu);
+
+        // Retrieve the share menu item
+        MenuItem menuItem = menu.findItem(R.id.action_share);
+
+        // Get the provider and hold onto it to set/change the share intent.
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+
+        // If onLoadFinished happens before this, we can go ahead and set the share intent now.
+        if (mTrailers != null && mTrailers.getChildCount() > 0) {
+            mShareActionProvider.setShareIntent(createShareForecastIntent());
+        }
+    }
+
+    private Intent createShareForecastIntent() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        shareIntent.setType("text/plain");
+        String shareText = "";
+        if(mTrailers != null && mTrailers.getChildCount() > 0){
+            View firstTrailer = mTrailers.getChildAt(0);
+            TextView trailerKey = (TextView) firstTrailer.findViewById(R.id.trailer_item_key);
+            shareText = trailerKey.getText().toString();
+        }
+
+        shareIntent.putExtra(Intent.EXTRA_TEXT, SHARE_TAG
+                + getResources().getString(R.string.youtube_url)+shareText);
+        return shareIntent;
     }
 
     @Override
@@ -185,9 +217,11 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
         if (data != null && data.moveToFirst()) {
 
             if(loader.getId() == DETAIL_LOADER){
+
                 Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(),  "fonts/walkway_semiBold.ttf");
                 mTitleTextView.setTypeface(custom_font);
                 mTitleTextView.setVisibility(View.VISIBLE);
@@ -208,7 +242,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
                 mRatingTextView.setText(getText(R.string.movie_rating_label) + ": " + movieVoteAverage + "/" + getString(R.string.movie_max_rating_label));
                 mRatingBar.setRating(movieVoteAverage.floatValue() / 2);
                 mRatingBar.setVisibility(View.VISIBLE);
-                mRuntimeTextView.setText(String.valueOf(movieRuntime));
+                mRuntimeTextView.setText(String.valueOf(movieRuntime)+getString(R.string.movie_runtime_units));
                 Picasso.with(getActivity().getApplicationContext())
                         .load(MovieDBConstants.MOVIE_DB_POSTERS_BASE+moviePoster)
                         .into(mPosterImageView);
@@ -257,16 +291,16 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
                         reviewAuthorTextView.setText(labelAuthor + " : " + reviewAuthor);
                         TextView reviewContentTextView = (TextView) v.findViewById(R.id.review_item_content);
                         reviewContentTextView.setText(reviewContent);
-                        if(data.isLast()){
-                            View reviewHorizontalLine = v.findViewById(R.id.review_item_horizontal_line);
-                            reviewHorizontalLine.setVisibility(View.GONE);
-                        }
                         mReviews.addView(v);
                     }
                 }
 
             }else if( loader.getId() == TRAILERS_LOADER){
                 if ( data != null ){
+
+                    if(mShareActionProvider != null){
+                        mShareActionProvider.setShareIntent(new Intent());
+                    }
 
                     LayoutInflater inflater = (LayoutInflater) this.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -284,16 +318,20 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
                                 new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + trailerKeyTextView.getText()));
+                                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                                                getResources().getString(R.string.youtube_intent_uri) + trailerKeyTextView.getText()));
                                         startActivity(intent);
                                     }
                                 }
                         );
-                        if(data.isLast()){
-                            View reviewHorizontalLine = v.findViewById(R.id.trailer_item_horizontal_line);
-                            reviewHorizontalLine.setVisibility(View.GONE);
-                        }
                         mTrailers.addView(v);
+                    }
+
+                    if(mTrailers.getChildCount() > 0){
+                        // If onCreateOptionsMenu has already happened, we need to update the share intent now.
+                        if (mShareActionProvider != null) {
+                            mShareActionProvider.setShareIntent(createShareForecastIntent());
+                        }
                     }
                 }
             }

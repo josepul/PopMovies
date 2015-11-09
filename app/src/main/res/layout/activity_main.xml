@@ -4,7 +4,7 @@
     android:name="es.josepul.popmovies.MoviePostersFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/normal_padding"
-    android:layout_marginRight="@dimen/normal_padding"
+    android:layout_marginLeft="@dimen/no_padding"
+    android:layout_marginRight="@dimen/no_padding"
     tools:layout="@layout/fragment_main"
     />
