@@ -17,4 +17,7 @@
 
     <!-- Control color for theme -->
     <color name="colorControlNormal">#000</color>
+
+    <color name="background_footer">#90000000</color>
+
 </resources>

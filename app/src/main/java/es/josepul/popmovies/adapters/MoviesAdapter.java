@@ -33,6 +33,8 @@ public class MoviesAdapter extends CursorAdapter {
         ImageView movieCoverImageView;
         @Bind(R.id.list_item_movie_id)
         TextView movieIdTextView;
+        @Bind(R.id.list_item_movie_title)
+        TextView movieTitleTextView;
 
         public ViewHolder(View view){
             ButterKnife.bind(this, view);
@@ -61,5 +63,8 @@ public class MoviesAdapter extends CursorAdapter {
         Picasso.with(context)
                 .load(MovieDBConstants.MOVIE_DB_POSTERS_BASE + moviePoster)
                 .into(viewHolder.movieCoverImageView);
+
+        String movieTitle = cursor.getString(MoviePostersFragment.COL_TITLE);
+        viewHolder.movieTitleTextView.setText(movieTitle);
     }
 }

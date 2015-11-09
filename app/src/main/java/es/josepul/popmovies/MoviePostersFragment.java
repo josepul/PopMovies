@@ -33,10 +33,12 @@ public class MoviePostersFragment extends Fragment implements LoaderManager.Load
     private static final int MOVIES_LOADER = 0;
     private static final String[] MOVIES_COLUMNS = {
             MoviesContract.MovieEntry.TABLE_NAME + "." + MoviesContract.MovieEntry._ID ,
-            MoviesContract.MovieEntry.COLUMN_NAME_POSTER
+            MoviesContract.MovieEntry.COLUMN_NAME_POSTER,
+            MoviesContract.MovieEntry.COLUMN_NAME_TITLE
     };
     public static final int COL_MOVIE_ID = 0;
     public static final int COL_POSTER = 1;
+    public static final int COL_TITLE = 2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

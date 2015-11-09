@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <ImageView
@@ -14,4 +14,15 @@
         android:visibility="gone"
         android:id="@+id/list_item_movie_id"/>
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/list_item_movie_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/background_footer"
+        android:maxLines="1"
+        android:padding="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@android:color/white" />
+
+</FrameLayout>
