@@ -98,7 +98,8 @@
                         android:id="@+id/movie_detail_mark_favourite"
                         android:text="Mark as Favourite"
                         android:elevation="10dp"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:visibility="invisible"/>
 
                 </LinearLayout>
 
@@ -118,7 +119,9 @@
                 android:paddingRight="@dimen/normal_padding"
                 android:paddingBottom="@dimen/trailers_reviews_bottom_padding"
                 android:textStyle="bold"
-                android:textSize="@dimen/normal_textsize"/>
+                android:textSize="@dimen/normal_textsize"
+                android:id="@+id/movie_trailers_label"
+                android:visibility="invisible"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -137,7 +140,9 @@
                 android:paddingRight="@dimen/normal_padding"
                 android:paddingBottom="@dimen/trailers_reviews_bottom_padding"
                 android:textStyle="bold"
-                android:textSize="@dimen/normal_textsize"/>
+                android:textSize="@dimen/normal_textsize"
+                android:id="@+id/movie_detail_reviews_label"
+                android:visibility="invisible"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

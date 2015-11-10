@@ -14,20 +14,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import java.util.ArrayList;
-
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import es.josepul.popmovies.adapters.MoviesAdapter;
 import es.josepul.popmovies.data.MoviesContract;
-import es.josepul.popmovies.model.Movie;
 
 
 public class MoviePostersFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private MoviesAdapter mMoviesAdapter;
-    private ArrayList<Movie> mMoviesList;
     private String mLastOrderValue;
     private View mRootView;
+    private boolean mMoviesFetched = false;
+    private static final String LOG_TAG = MoviePostersFragment.class.getSimpleName();
+
+    @Bind(R.id.error_image) ImageView mErrorImageView;
+    @Bind(R.id.error_text) TextView mErrorTextView;
 
     private static final int MOVIES_LOADER = 0;
     private static final String[] MOVIES_COLUMNS = {
@@ -40,22 +45,11 @@ public class MoviePostersFragment extends Fragment implements LoaderManager.Load
     public static final int COL_TITLE = 2;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        String order = getOrderPreferences();
-        String favouritePreference = getString(R.string.pref_order_favourite);
-
-        if(!order.equals(favouritePreference)){
-            new FetchMovies(this.getContext()).execute();
-        }
-
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        ButterKnife.bind(this, mRootView);
 
         String actualOrder;
 
@@ -68,16 +62,14 @@ public class MoviePostersFragment extends Fragment implements LoaderManager.Load
             mLastOrderValue = actualOrder;
         }
 
-        /*if(actualOrder.equalsIgnoreCase(mLastOrderValue) && (mMoviesList != null && !mMoviesList.isEmpty())) {
-            for(Movie movie : mMoviesList)
-            mMoviesAdapter.add(movie);
-        } else {
-            //[en] Order preferences have changed or movies is empty. Execute FetchMovies task to get
-            //movies from service
-            //[es] Las preferencies de ordenacion ham cambiado o las peliculas estan vacias. Se ejecuta
-            //la tarea FetchMovies para obtener las peliculas del servicio
-            new FetchMovies().execute();
-        }*/
+        String order = getOrderPreferences();
+        String favouritePreference = getString(R.string.pref_order_favourite);
+
+        if(!order.equals(favouritePreference) && !mMoviesFetched){
+            new FetchMovies(this.getContext(), mRootView).execute();
+            mMoviesFetched = true;
+        }
+
 
         GridView gridView = (GridView) mRootView.findViewById(R.id.movies_grid);
         gridView.setAdapter(mMoviesAdapter);
@@ -105,15 +97,13 @@ public class MoviePostersFragment extends Fragment implements LoaderManager.Load
         String actualOrder = getOrderPreferences();
         String favouriteOrder = getString(R.string.pref_order_favourite);
         if(mLastOrderValue != null && !mLastOrderValue.equalsIgnoreCase(actualOrder)){
-                /*|| mMoviesList == null
-                || mMoviesList.isEmpty()){*/
             //[en] If last execution of FetchMovies was with different order criteria it's
             // necessary to execute FetchMovies task because movies order has changed in preferences.
             //[es] Si la ultima ejecucion de FetchMovies fue con un criterio de ordenacion diferente
             //es necesario ejecutar de nuevo FetchMovies porque el criterio de ordenacion
             //ha cambiado en las preferencias
             getLoaderManager().restartLoader(MOVIES_LOADER, null, this);
-            new FetchMovies(getActivity()).execute();
+            new FetchMovies(getActivity(), mRootView).execute();
 
             //[en] Update lastOrderValue to actual order preference
             //[es] Actualizar lastOrderValue al criterio de ordenacion actual en las preferencias
@@ -145,7 +135,6 @@ public class MoviePostersFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        //FIXME Comprobar lo que hace sortOrder si no va establecido
 
         Uri moviesUri = MoviesContract.MovieEntry.CONTENT_URI;
 
@@ -176,6 +165,19 @@ public class MoviePostersFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mMoviesAdapter.swapCursor(data);
+        if(data != null && data.getCount() == 0){
+            String order = getOrderPreferences();
+            String favourite = getString(R.string.pref_order_favourite);
+            if(order.equalsIgnoreCase(favourite)){
+                mRootView.findViewById(R.id.error_layout).setVisibility(View.VISIBLE);
+                mRootView.findViewById(R.id.movies_grid).setVisibility(View.GONE);
+                if(mErrorImageView != null && mErrorTextView != null ){
+                    mErrorImageView.setImageResource(R.drawable.no_favourites);
+                    mErrorTextView.setText(getString(R.string.no_favourite_movies));
+                }
+            }
+
+        }
     }
 
     @Override

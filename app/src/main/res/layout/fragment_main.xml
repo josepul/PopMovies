@@ -14,6 +14,7 @@
         android:verticalSpacing="@dimen/no_spacing"
         android:horizontalSpacing="@dimen/no_spacing"/>
 
-
+    <include layout="@layout/error_layout" android:id="@+id/error_layout"
+        android:visibility="gone"/>
 
 </RelativeLayout>

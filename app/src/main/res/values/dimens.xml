@@ -30,9 +30,14 @@
     <!-- Dimen for normal text size (release, rating)-->
     <dimen name="normal_textsize">20dp</dimen>
 
-    <!-- Dimen for normal text size (release, rating)-->
+    <!-- Dimen for reviews left padding-->
     <dimen name="trailers_reviews_bottom_padding">10dp</dimen>
 
-    <!-- Dimen for normal text size (release, rating)-->
+    <!-- Dimen trailers left padding-->
     <dimen name="trailers_title_left_padding">10dp</dimen>
+
+    <!-- Dimen trailers left padding-->
+    <dimen name="error_image_width_height">100dp</dimen>
+
+
 </resources>

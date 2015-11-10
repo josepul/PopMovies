@@ -95,7 +95,6 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
     public static final int COL_TRAILER_ID = 0;
     public static final int COL_TRAILER_NAME = 1;
     public static final int COL_TRAILER_KEY = 2;
-    public static final int COL_TRAILER_SIZE = 3;
 
 
     @Bind(R.id.movie_detail_name) TextView mTitleTextView;
@@ -108,6 +107,8 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
     @Bind(R.id.movie_detail_reviews) LinearLayout mReviews;
     @Bind(R.id.movie_detail_trailers) LinearLayout mTrailers;
     @Bind(R.id.movie_detail_mark_favourite) Button mFavourite;
+    @Bind(R.id.movie_trailers_label) TextView mTrailersLabel;
+    @Bind(R.id.movie_detail_reviews_label) TextView mReviewsLabel;
 
 
     public MovieDetailActivityFragment(){
@@ -120,6 +121,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
 
         Bundle arguments = getArguments();
         if(arguments != null){
+            //Load uri from MainActivity into mUri
             mUri = arguments.getParcelable(DETAIL_URI);
         }
 
@@ -132,6 +134,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        //Init loaders
         getLoaderManager().initLoader(DETAIL_LOADER, null, this);
         getLoaderManager().initLoader(REVIEWS_LOADER, null, this);
         getLoaderManager().initLoader(TRAILERS_LOADER, null, this);
@@ -151,16 +154,17 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
 
         // If onLoadFinished happens before this, we can go ahead and set the share intent now.
         if (mTrailers != null && mTrailers.getChildCount() > 0) {
-            mShareActionProvider.setShareIntent(createShareForecastIntent());
+            mShareActionProvider.setShareIntent(createShareIntent());
         }
     }
 
-    private Intent createShareForecastIntent() {
+    private Intent createShareIntent() {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         shareIntent.setType("text/plain");
         String shareText = "";
         if(mTrailers != null && mTrailers.getChildCount() > 0){
+            //If the novie has trailers, create an intent to share the first trailer
             View firstTrailer = mTrailers.getChildAt(0);
             TextView trailerKey = (TextView) firstTrailer.findViewById(R.id.trailer_item_key);
             shareText = trailerKey.getText().toString();
@@ -173,14 +177,12 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.v(LOG_TAG, "In onCreateLoader");
         Intent intent = getActivity().getIntent();
         CursorLoader cursorLoader = null;
         if (mUri != null ) {
 
             if (id == DETAIL_LOADER) {
-                // Now create and return a CursorLoader that will take care of
-                // creating a Cursor for the data being displayed.
+                //Cursor para cargar el detalle de las peliculas
                 cursorLoader = new CursorLoader(
                         getActivity(),
                         mUri,
@@ -190,6 +192,8 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
                         null
                 );
             } else if (id == REVIEWS_LOADER) {
+                //Cursor para cargar las reviews
+                //Obtener el id de la pelicula de la uri recibida en el constructor
                 long idMovie = Long.parseLong(MoviesContract.ReviewEntry.getMovieIdFromUri(mUri));
                 cursorLoader = new CursorLoader(
                         getActivity(),
@@ -200,6 +204,8 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
                         null
                 );
             } else if (id == TRAILERS_LOADER) {
+                //Cursor para cargar los trailers
+                //Obtener el id de la pelicula de la uri recibida en el constructor
                 long idMovie = Long.parseLong(MoviesContract.TrailerEntry.getMovieIdFromUri(mUri));
                 cursorLoader = new CursorLoader(
                         getActivity(),
@@ -217,11 +223,11 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        //Ha terminado la carga del cursor
         if (data != null && data.moveToFirst()) {
 
             if(loader.getId() == DETAIL_LOADER){
-
+                //Se carga el cursor de detalle de la pelicula
                 Typeface custom_font = Typeface.createFromAsset(getActivity().getAssets(),  "fonts/walkway_semiBold.ttf");
                 mTitleTextView.setTypeface(custom_font);
                 mTitleTextView.setVisibility(View.VISIBLE);
@@ -242,7 +248,8 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
                 mRatingTextView.setText(getText(R.string.movie_rating_label) + ": " + movieVoteAverage + "/" + getString(R.string.movie_max_rating_label));
                 mRatingBar.setRating(movieVoteAverage.floatValue() / 2);
                 mRatingBar.setVisibility(View.VISIBLE);
-                mRuntimeTextView.setText(String.valueOf(movieRuntime)+getString(R.string.movie_runtime_units));
+                mRuntimeTextView.setText(String.valueOf(movieRuntime) + getString(R.string.movie_runtime_units));
+                mFavourite.setVisibility(View.VISIBLE);
                 Picasso.with(getActivity().getApplicationContext())
                         .load(MovieDBConstants.MOVIE_DB_POSTERS_BASE+moviePoster)
                         .into(mPosterImageView);
@@ -274,13 +281,15 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
                     }
                 });
             }else if( loader.getId() == REVIEWS_LOADER){
-                //mReviewsAdapter.swapCursor(data);
 
-                if ( data != null ){
+                //Se carga el cursor con las review en un LinearLayout
 
+                if ( data != null && data.getCount() > 0){
+                    //Inflar el layout
                     LayoutInflater inflater = (LayoutInflater) this.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-                    while(data.moveToNext()){
+                    do{
+                        //Iterar sobre las reviews
                         String labelAuthor = getString(R.string.review_author);
                         String labelContent = getString(R.string.review_content);
                         String reviewAuthor = data.getString(MovieDetailActivityFragment.COL_REVIEW_AUTHOR);
@@ -292,19 +301,27 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
                         TextView reviewContentTextView = (TextView) v.findViewById(R.id.review_item_content);
                         reviewContentTextView.setText(reviewContent);
                         mReviews.addView(v);
-                    }
+                    }while(data.moveToNext());
+
+                    mReviewsLabel.setVisibility(View.VISIBLE);
+                }else{
+                    mReviewsLabel.setVisibility(View.INVISIBLE);
                 }
 
             }else if( loader.getId() == TRAILERS_LOADER){
-                if ( data != null ){
+                //Se carga el cursor con los trailers
+                if ( data != null && data.getCount() > 0){
 
                     if(mShareActionProvider != null){
                         mShareActionProvider.setShareIntent(new Intent());
                     }
 
+                    //Se infla el layout
                     LayoutInflater inflater = (LayoutInflater) this.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-                    while(data.moveToNext()){
+                    data.moveToFirst();
+                    do{
+                        //Iterar sobre los trailers
                         String trailerName = data.getString(MovieDetailActivityFragment.COL_REVIEW_AUTHOR);
                         String trailerKey = data.getString(MovieDetailActivityFragment.COL_REVIEW_CONTENT);
 
@@ -325,14 +342,18 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
                                 }
                         );
                         mTrailers.addView(v);
-                    }
+                    }while(data.moveToNext());
 
                     if(mTrailers.getChildCount() > 0){
                         // If onCreateOptionsMenu has already happened, we need to update the share intent now.
                         if (mShareActionProvider != null) {
-                            mShareActionProvider.setShareIntent(createShareForecastIntent());
+                            mShareActionProvider.setShareIntent(null);
                         }
                     }
+
+                    mTrailersLabel.setVisibility(View.VISIBLE);
+                }else{
+                    mTrailersLabel.setVisibility(View.INVISIBLE);
                 }
             }
 
