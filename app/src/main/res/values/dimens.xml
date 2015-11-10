@@ -39,5 +39,10 @@
     <!-- Dimen trailers left padding-->
     <dimen name="error_image_width_height">100dp</dimen>
 
+    <!-- Dimen forposter text-->
+    <dimen name="poster_textsize">13dp</dimen>
+
+    <!-- Dimen for play icon-->
+    <dimen name="play_icon_size">48dp</dimen>
 
 </resources>

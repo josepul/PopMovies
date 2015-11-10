@@ -22,10 +22,10 @@
         android:background="@color/background_footer"
         android:maxLines="2"
         android:minLines="2"
-        android:padding="16dp"
+        android:padding="@dimen/normal_padding"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@android:color/white"
-        android:textSize="13dp"
+        android:textSize="@dimen/poster_textsize"
         android:gravity="center_horizontal"
         android:ellipsize="end"/>
 
